@@ -1,26 +1,34 @@
 /*jslint node: true */
 'use strict';
 
-const promise = require('bluebird');
+//const promise = require('bluebird');
 const Validators = require('../plugins/validators');
-const produtosModel = require('../models/produtos-model');
-const produtos = new produtosModel();
+//const produtosModel = require('../models/produtos-model');
+//const produtos = new produtosModel();
+const model = require('../models/produtos-model2');
 
-exports.get = (req, res, next) => {
-    produtos.getAll()
-        .then(_produtos => {
-            return _produtos.filter(x => {
-                return parseInt(x.ativo) === 1;
-            });
-        })
-        .then(_produtos => {
-            res.status(201)
-                .send({
-                    produtos: _produtos
-                });
-        })
-        .catch(getError(res));
+exports.get = async (req, res, next) => {
+    try {
+        let results = await model.getAll();
+        let produtosAtivos = await results.filter(result => {
+            return parseInt(result.ativo) === 1;
+        });
+        return success(res, { produtos: produtosAtivos });
+    } catch (e) {
+        return error(res);
+    }
 };
+/*exports.get = async (req, res, next) => {
+    try {
+        let results = await produtos.getAll();
+        let produtosAtivos = await results.filter(result => {
+            return parseInt(result.ativo) === 1;
+        });
+        return success(res, { produtos: produtosAtivos });
+    } catch (e) {
+        return error(res);
+    }
+};*/
 
 exports.getById = (req, res, next) => {
     const id = req.params.id;
@@ -30,7 +38,7 @@ exports.getById = (req, res, next) => {
             res.status(201)
                 .send(_produto);
         })
-        .catch(getError(res));
+        .catch(error(res));
 };
 
 exports.post = (req, res, next) => {
@@ -50,7 +58,7 @@ exports.post = (req, res, next) => {
     };
 
     produtos.insert(dados)
-        .then(() => produtos.getLastInserted())
+        .then(_ => produtos.getLastInserted())
         .then(_produto => {
             res.status(201)
                 .send({
@@ -58,7 +66,7 @@ exports.post = (req, res, next) => {
                     id: _produto.id
                 });
         })
-        .catch(getError(res));
+        .catch(error(res));
 };
 
 exports.put = (req, res, next) => {
@@ -69,29 +77,29 @@ exports.put = (req, res, next) => {
     };
 
     produtos.update(dados)
-        .then(() => {
+        .then(_ => {
             res.status(200)
                 .send({
                     message: 'Produto atualizado com sucesso',
                     id: req.params.id
                 });
         })
-        .catch(getError(res));
+        .catch(error(res));
 };
 
 exports.delete = (req, res, next) => {
     produtos.tornaInativo(req.params.id)
-        .then(() => {
+        .then(_ => {
             res.status(200)
                 .send({
                     message: 'Produto deletado com sucesso',
                     id: req.params.id
                 });
         })
-        .catch(getError(res));
+        .catch(error(res));
 };
 
-function getError(res) {
+function error(res) {
     return err => {
         if (JSON.stringify(err) !== '{}')
             res.status(400)
@@ -99,4 +107,8 @@ function getError(res) {
                     message: 'Falha ao executar o comando'
                 });
     };
+}
+
+function success(res, send) {
+    return res.status(201).send(send);
 }

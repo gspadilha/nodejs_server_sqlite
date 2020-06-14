@@ -1,6 +1,15 @@
 /*jslint node: true */
 'use strict';
 
+const dao = require('../repository/dao');
+//let thisDao = new dao();
+
+exports.getAll = async () => {
+    const results = await dao.all(`SELECT id, nome, ativo FROM produtos`);
+    return results;
+};
+
+/*
 class ProdutosModel {
     constructor() {
         const dao = require('../repository/dao');
@@ -36,7 +45,7 @@ class ProdutosModel {
 
     update(dados) {
         const sql = `
-            UPDATE produtos 
+            UPDATE produtos
             SET nome = ?,
                 preco = ?
             WHERE id = ?
@@ -65,7 +74,7 @@ class ProdutosModel {
     getById(id) {
         const sql = `
             SELECT id, nome, ativo
-            FROM produtos 
+            FROM produtos
             WHERE id = ?
         `;
 
@@ -78,7 +87,7 @@ class ProdutosModel {
     getLastInserted() {
         const sql = `
             SELECT id
-            FROM produtos 
+            FROM produtos
             order by 1 desc
         `;
 
@@ -92,8 +101,8 @@ class ProdutosModel {
 
     mudaStatus(status) {
         return `
-            UPDATE produtos 
-            SET ativo = ${status} 
+            UPDATE produtos
+            SET ativo = ${status}
             WHERE id = ?
         `;
     }
@@ -113,4 +122,4 @@ class ProdutosModel {
     }
 }
 
-module.exports = ProdutosModel;
+module.exports = ProdutosModel;*/
