@@ -1,3 +1,6 @@
+/*jslint node: true */
+'use strict';
+
 class ProdutosModel {
     constructor() {
         const dao = require('./dao');
@@ -15,7 +18,6 @@ class ProdutosModel {
         `;
 
         return this.dao.run(sql);
-
     }
 
     insert(dados) {
@@ -35,15 +37,16 @@ class ProdutosModel {
     update(dados) {
         const sql = `
             UPDATE produtos 
-            SET nome = ? 
+            SET nome = ?,
+                preco = ?
             WHERE id = ?
         `;
 
-        const { id, nome } = dados;
+        const { id, nome, preco } = dados;
 
         return this.dao.run(
             sql,
-            [nome, id]
+            [nome, preco, id]
         );
     }
 
@@ -96,14 +99,14 @@ class ProdutosModel {
 
     tornaAtivo(id) {
         return this.dao.run(
-            mudaStatus(1),
+            this.mudaStatus(1),
             [id]
         );
     }
 
     tornaInativo(id) {
         return this.dao.run(
-            mudaStatus(0),
+            this.mudaStatus(0),
             [id]
         );
     }
