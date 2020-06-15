@@ -1,116 +1,97 @@
 /*jslint node: true */
 'use strict';
 
-class ProdutosModel {
-    constructor() {
-        const dao = require('../repository/dao');
-        this.dao = new dao();
+const dao = require('../repository/dao');
+
+exports.createTable = async () => {
+    const sql = `
+        CREATE TABLE IF NOT EXISTS produtos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            preco REAL NOT NULL,
+            ativo INTEGER
+        )
+    `;
+
+    return await dao.run(sql);
+};
+
+exports.insert = async (dados) => {
+    const sql = `
+        INSERT INTO produtos (nome, preco, ativo)
+        VALUES (?, ?, 0)
+    `;
+
+    const { nome, preco } = dados;
+
+    let executed = await dao.run(sql, [nome, preco]);
+
+    if (executed) {
+        return this.getLastInserted();
     }
 
-    createTable() {
-        const sql = `
-            CREATE TABLE IF NOT EXISTS produtos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome TEXT NOT NULL,
-                preco REAL NOT NULL,
-                ativo INTEGER
-            )
-        `;
+    return false;
+};
 
-        return this.dao.run(sql);
-    }
+exports.update = async (dados) => {
+    const sql = `
+        UPDATE produtos
+        SET nome = ?,
+            preco = ?
+        WHERE id = ?
+    `;
 
-    insert(dados) {
-        const sql = `
-            INSERT INTO produtos (nome, preco, ativo)
-            VALUES (?, ?, 0)
-        `;
+    const { id, nome, preco } = dados;
 
-        const { nome, preco } = dados;
+    return dao.run(sql, [nome, preco, id]);
+};
 
-        return this.dao.run(
-            sql,
-            [nome, preco]
-        );
-    }
+exports.delete = async (id) => {
+    const sql = `
+        DELETE FROM produtos
+        WHERE id = ?
+    `;
 
-    update(dados) {
-        const sql = `
-            UPDATE produtos 
-            SET nome = ?,
-                preco = ?
-            WHERE id = ?
-        `;
+    return dao.run(sql, [id]);
+};
 
-        const { id, nome, preco } = dados;
+exports.getAll = async () => {
+    const results = await dao.all(`SELECT id, nome, ativo FROM produtos`);
+    return results;
+};
 
-        return this.dao.run(
-            sql,
-            [nome, preco, id]
-        );
-    }
+exports.getById = async (id) => {
+    const sql = `
+        SELECT id, nome, ativo
+        FROM produtos
+        WHERE id = ?
+    `;
 
-    delete(id) {
-        const sql = `
-            DELETE FROM produtos
-            WHERE id = ?
-        `;
+    return await dao.get(sql, [id]);
+};
 
-        return this.dao.run(
-            sql,
-            [id]
-        );
-    }
+exports.getLastInserted = async () => {
+    const sql = `
+        SELECT id
+        FROM produtos
+        order by 1 desc
+    `;
 
-    getById(id) {
-        const sql = `
-            SELECT id, nome, ativo
-            FROM produtos 
-            WHERE id = ?
-        `;
+    return dao.get(sql);
+};
 
-        return this.dao.get(
-            sql,
-            [id]
-        );
-    }
+exports.mudaStatus = (status) => {
+    return `
+        UPDATE produtos
+        SET ativo = ${status}
+        WHERE id = ?
+    `;
+};
 
-    getLastInserted() {
-        const sql = `
-            SELECT id
-            FROM produtos 
-            order by 1 desc
-        `;
+exports.tornaAtivo = async (id) => {
+    return dao.run(this.mudaStatus(1), [id]);
+};
 
-        return this.dao.get(sql);
-    }
-
-    async getAll() {
-        const results = await this.dao.all(`SELECT id, nome, ativo FROM produtos`);
-        return results;
-    }
-
-    mudaStatus(status) {
-        return `
-            UPDATE produtos 
-            SET ativo = ${status} 
-            WHERE id = ?
-        `;
-    }
-
-    tornaAtivo(id) {
-        return this.dao.run(
-            this.mudaStatus(1),
-            [id]
-        );
-    }
-
-    tornaInativo(id) {
-        return this.dao.run(
-            this.mudaStatus(0),
-            [id]
-        );
-    }
-}
-
-module.exports = ProdutosModel;
+exports.tornaInativo = async (id) => {
+    return dao.run(this.mudaStatus(0), [id]);
+};

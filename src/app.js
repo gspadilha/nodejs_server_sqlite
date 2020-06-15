@@ -4,7 +4,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const router = express.Router();
 
 const indexRoute = require('./routes/index');
 const produtosRoute = require('./routes/produtos-route');
