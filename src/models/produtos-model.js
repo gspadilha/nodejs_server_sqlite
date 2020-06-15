@@ -19,7 +19,7 @@ exports.createTable = async () => {
 exports.insert = async (dados) => {
     const sql = `
         INSERT INTO produtos (nome, preco, ativo)
-        VALUES (?, ?, 0)
+        VALUES (?, ?, 1)
     `;
 
     const { nome, preco } = dados;
