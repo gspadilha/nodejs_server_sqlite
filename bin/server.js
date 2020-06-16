@@ -1,9 +1,9 @@
 /*jslint node: true */
 'use strict';
 
-const app = require('../src/app');
 const debug = require('debug')('nodestr:server');
 const http = require('http');
+const app = require('../src/app');
 
 const port = normalizaPorta(process.env.PORT || 3000);
 app.set('port', port);
@@ -12,7 +12,11 @@ const server = http.createServer(app);
 server.listen(port);
 server.on('listening', onListening);
 
+
 console.log(`Servidor iniciado na porta ${port}`);
+setInterval(() => {
+    console.log(`Servidor rodando na porta ${port}`);
+}, 5000);
 
 function normalizaPorta(value) {
     const port = parseInt(value);

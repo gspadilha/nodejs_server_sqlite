@@ -27,9 +27,6 @@ exports.get = async (req, res, next) => {
 
     try {
         let produtosAtivos = await model.getAll();
-        /*let produtosAtivos = await results.filter(result => {
-            return parseInt(result.ativo) === 1;
-        });*/
         return success(res, { produtos: produtosAtivos });
     } catch (e) {
         return error(res);

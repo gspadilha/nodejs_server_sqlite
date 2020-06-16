@@ -1,0 +1,12 @@
+module.exports = {
+    server: {
+        ENV: 'desenv',
+        SALT_KEY: 'QUALQUER_SALT_KEY'
+    },
+    email: {
+        host: 'HOST_SMTP',
+        port: 'PORT_SMTP',
+        user: 'USER_SMTP',
+        pass: 'PASS_SMTP'
+    }
+};
