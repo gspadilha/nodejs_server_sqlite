@@ -1,7 +1,7 @@
 /*jslint node: true */
 'use strict';
 
-const config = require('../../configs/config');
+const config = require('../../configs/server-config');
 const jwt = require('jsonwebtoken');
 
 exports.generateToken = async (data) => {
