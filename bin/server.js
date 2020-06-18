@@ -9,9 +9,8 @@ const port = normalizaPorta(process.env.PORT || 3000);
 app.set('port', port);
 
 const server = http.createServer(app);
-server.listen(port);
 server.on('listening', onListening);
-
+server.listen(port);
 
 console.log(`Servidor iniciado na porta ${port}`);
 setInterval(() => {
