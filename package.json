@@ -12,20 +12,20 @@
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.7.2",
-    "body-parser": "^1.19.2",
+    "body-parser": "^1.20.0",
     "compression": "^1.7.4",
     "crypto-js": "^4.1.1",
-    "debug": "^4.3.3",
-    "express": "^4.17.3",
+    "debug": "^4.3.4",
+    "express": "^4.18.1",
     "fs": "0.0.1-security",
     "http": "0.0.1-security",
     "http2": "^3.3.7",
     "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
-    "nodemailer": "^6.7.2",
-    "sqlite3": "^5.0.2"
+    "nodemailer": "^6.7.5",
+    "sqlite3": "^5.0.8"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.16"
   }
 }
